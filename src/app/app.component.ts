@@ -16,7 +16,7 @@ export class AppComponent {
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
-      if (params['code'] !== null) {
+      if (params['code']) {
         this.code = params['code'];
         console.log(this.code);
 
