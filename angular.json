@@ -94,7 +94,10 @@
           }
         },
         "deploy": {
-          "builder": "angular-cli-ghpages:deploy"
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "baseHref": "https://teslax2.github.io/qmpl-ui"
+          }
         }
       }
     }
