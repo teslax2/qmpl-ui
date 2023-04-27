@@ -3,7 +3,6 @@ import { Route, ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
-import { Token } from '@angular/compiler';
 
 @Component({
   selector: 'app-root',
