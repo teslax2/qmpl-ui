@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { Route, ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
+import { Token } from '@angular/compiler';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,11 @@ import { catchError, retry } from 'rxjs/operators';
 export class AppComponent {
   title = 'qmpl-ui';
   private code = '';
-  constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
@@ -21,23 +26,21 @@ export class AppComponent {
         console.log(this.code);
 
         this.http
-          .post(
+          .post<Token>(
             'https://qmpl.auth.eu-central-1.amazoncognito.com/oauth2/token',
-            {
-              grant_type: 'authorization_code',
-              client_id: '3ojt0f6465n9i5hmffac81u9kj',
-              code: this.code,
-              redirect_uri: 'https://teslax2.github.io/qmpl-ui',
-            },
-            {
-              headers: new HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-                //Authorization: 'Basic M29qdDBmNjQ2NW45aTVobWZmYWM4MXU5a2o',
-              }),
+            new HttpParams({
+              fromObject: {
+                grant_type: 'authorization_code',
+                client_id: '3ojt0f6465n9i5hmffac81u9kj',
+                code: this.code,
+                redirect_uri: 'https://teslax2.github.io/qmpl-ui',
+              },
+            }).toString(),
+            {headers : new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
             }
           )
           .subscribe({
-            next: (data) => console.log(data),
+            next: (data) => {console.log(data); localStorage.setItem('token', JSON.stringify(data));},
             error: (e) => console.error(e),
             complete: () => console.info('complete'),
           });
@@ -46,6 +49,14 @@ export class AppComponent {
   }
 
   login() {
-    window.location.href = 'https://qmpl.auth.eu-central-1.amazoncognito.com/oauth2/authorize?response_type=code&client_id=3ojt0f6465n9i5hmffac81u9kj&redirect_uri=https://teslax2.github.io/qmpl-ui&scope=openid+email';
+    window.location.href =
+      'https://qmpl.auth.eu-central-1.amazoncognito.com/oauth2/authorize?response_type=code&client_id=3ojt0f6465n9i5hmffac81u9kj&redirect_uri=https://teslax2.github.io/qmpl-ui&scope=openid+email';
   }
+}
+
+interface Token{
+    access_token : string;
+    id_token: string;
+    token_type: string;
+    expires_in: number;
 }
