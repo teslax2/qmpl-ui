@@ -16,7 +16,7 @@ export class AppComponent {
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
-      if (params['code']) {
+      if (params['code'] != null) {
         this.code = params['code'];
         console.log(this.code);
 
@@ -34,7 +34,11 @@ export class AppComponent {
               Authorization: 'Basic M29qdDBmNjQ2NW45aTVobWZmYWM4MXU5a2o',
             }),
           }
-        ).subscribe(x => console.log(x))
+        ).subscribe({
+          next: (data) => console.log(data),
+          error: (e) => console.error(e),
+          complete: () => console.info('complete'),
+        });
       }
     });
   }
