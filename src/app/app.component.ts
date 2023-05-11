@@ -12,6 +12,7 @@ import { AuthService } from './auth/auth.service';
 export class AppComponent {
   title = 'qmpl-ui';
   private code = '';
+  localToken? : Token;
   constructor(private route: ActivatedRoute, private auth: AuthService) {}
 
   ngOnInit() {
@@ -26,9 +27,11 @@ export class AppComponent {
 
   login() {
     this.auth.login();
+    this.localToken = this.auth.getLocalToken() ?? undefined;
   }
 
   refreshToken() {
     this.auth.refreshToken();
+    this.localToken = this.auth.getLocalToken() ?? undefined;
   }
 }

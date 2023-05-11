@@ -1,3 +1,5 @@
 <h1>{{title}}</h1>
 <button type="button" (click)="login()">Login</button>
-<button type="button" (click)="refreshToken()">Refresh</button>
+<div *ngIf="localToken">
+    <button type="button" (click)="refreshToken()">Refresh</button>
+</div>

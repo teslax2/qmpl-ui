@@ -48,10 +48,10 @@ export class AuthService {
   }
 
   refreshToken() {
-    if (localStorage.getItem('token') == null) {
-      console.error('local token doesnt exists');
+    let localToken =this.getLocalToken();
+    if (localToken == null) {
+      return;
     }
-    let localToken: Token = JSON.parse(localStorage.getItem('token')!);
     this.http
       .post<Token>(
         `${this.baseEndpoint}${this.tokenEndpoint}`,
@@ -71,11 +71,24 @@ export class AuthService {
       )
       .subscribe({
         next: (data) => {
-          console.log('refresh token received');
-          localStorage.setItem('token', JSON.stringify(data));
+          this.setLocalToken(data);
         },
         error: (e) => console.error(e),
         complete: () => console.info('complete'),
       });
+  }
+
+  getLocalToken():Token|null{
+    if (localStorage.getItem('token') == null) {
+      console.error('token doesnt exists in local storage');
+      return null;
+    }
+    let localToken: Token = JSON.parse(localStorage.getItem('token')!);
+    return localToken;
+  }
+
+  setLocalToken(token:Token){
+    console.log('saving token to local storage');
+    localStorage.setItem('token', JSON.stringify(token));
   }
 }
